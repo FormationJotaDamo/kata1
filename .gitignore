@@ -1,0 +1,28 @@
+node_modules/
+dist/
+.eslintcache
+
+.env*
+!.env.example
+
+# Log files
+npm-debug.log*
+
+# Editor directories and files
+.idea/*
+!.idea/runConfigurations
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+*.orig
+
+# Coverage
+.nyc_output
+coverage
+mocha.xml
+
+ansible/*.retry
+.vault_id.txt
