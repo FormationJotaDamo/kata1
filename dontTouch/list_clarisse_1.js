@@ -2,7 +2,7 @@ export class OutOfRangeArrayException extends Error {}
 
 export default class List_clarisse_1 {
   constructor({ maxSize = Number.MAX_SAFE_INTEGER } = {}) {
-    this.myArray = []
+  this.myArray = []
     this.maxSize = maxSize
   }
 

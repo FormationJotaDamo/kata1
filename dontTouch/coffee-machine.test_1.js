@@ -227,16 +227,137 @@ describe('Unit | Coffee Machine', () => {
 
   describe('#printSugarMessage', () => {
     // Clarisse TODO
-    // verifyStep 3
+    // verifyStep 2
     // printMessage 'Veuillez choisir un nombre de sucre
     // increase step
+    beforeEach(() => {
+      machine.step = 2
+      machine.verifyStep = stub().named('CoffeeMachine.verifyStep')
+      machine.printMessage = stub().named('CoffeeMachine.printMessage')
+    })
+    it('should call verifyStep', () => {
+      // When
+      machine.printSugarMessage()
+      // Then
+      expect(machine.verifyStep).to.have.been.calledOnce
+      expect(machine.verifyStep).to.have.been.calledWithExactly(2)
+    })
+
+    it('should call printMessage', () => {
+      // When
+      machine.printSugarMessage()
+      // Then
+      expect(machine.printMessage).to.have.been.calledOnce
+      expect(machine.printMessage).to.have.been.calledWithExactly(
+        'Veuillez choisir un nombre de sucre',
+        '1 à 5 sucres')
+    })
+    it('should increase the step', () => {
+      // When
+      machine.printSugarMessage()
+      // Then
+      expect(machine.step).to.equal(3)
+    })
   })
 
   describe('#chooseSugar', () => {
     // Clarisse TODO
-    // VerifyStep 4
+    // VerifyStep 3
     // ???
     // Throw InvalidSelectionError value incorrect
+    beforeEach(() => {
+      machine.step = 3
+      machine.verifyStep = stub().named('CoffeeMachine.verifyStep')
+      machine.printMessage = stub().named('CoffeeMachine.printMessage')
+    })
+
+    context('When the value is incorrect', () => {
+      context('When the value is under 1', () => {
+        it('should throw InvalidSelectionError', () => {
+          // Given
+          let error
+          // Then
+          try {
+            // When
+            machine.chooseSugar(-1)
+          } catch (raisedError) {
+            error = raisedError
+          } finally {
+            // Then
+            expect(error).to.exist
+            expect(error).to.be.instanceOf(InvalidSelectionError)
+            expect(error.message).to.equal('La valeur -1 n\'est pas correcte')
+          }
+        })
+      })
+      context('When the value is above 5', () => {
+        it('should throw InvalidSelectionError', () => {
+          // Given
+          let error
+          // Then
+          try {
+            // When
+            machine.chooseSugar(6)
+          } catch (raisedError) {
+            error = raisedError
+          } finally {
+            // Then
+            expect(error).to.exist
+            expect(error).to.be.instanceOf(InvalidSelectionError)
+            expect(error.message).to.equal('La valeur 6 n\'est pas correcte')
+          }
+        })
+      })
+      context('When the value is correct', () => {
+        it('should call method verifyStep with value 1', () => {
+          // Given
+          const expectedStep = 3
+          // When
+          machine.chooseSugar(1)
+          // Then
+          expect(machine.verifyStep).to.have.been.calledOnce
+          expect(machine.verifyStep).to.have.been.calledWithExactly(expectedStep)
+        })
+
+        it('should call method printMessage with 1 sugar', () => {
+          // Given
+          const value = 1
+          // When
+          machine.chooseSugar(value)
+          // Then
+          expect(machine.printMessage).to.have.been.calledOnce
+          expect(machine.printMessage).to.have.been.calledWithExactly('Vous avez choisi le nombre de sucre :', 1)
+        })
+
+        it('should call method printMessage with 2 sugar', () => {
+          // Given
+          const value = 2
+          // When
+          machine.chooseSugar(value)
+          // Then
+          expect(machine.printMessage).to.have.been.calledOnce
+          expect(machine.printMessage).to.have.been.calledWithExactly('Vous avez choisi le nombre de sucre :', 2)
+        })
+
+        it('should increase the step', () => {
+          // Given
+          const value = 1
+          // When
+          machine.chooseSugar(value)
+          // Then
+          expect(machine.step).to.deep.equal(4)
+        })
+
+        it('should set the sugar number', () => {
+          // Given
+          const value = 1
+          // When
+          machine.chooseSugar(value)
+          // Then
+          expect(machine.sugar).to.deep.equal(value)
+        })
+      })
+    })
   })
 
   describe('#build', () => {
@@ -244,6 +365,9 @@ describe('Unit | Coffee Machine', () => {
     // No information
     beforeEach(() => {
       machine.verifyStep = stub().named('CoffeeMachine.verifyStep')
+      machine.step = 4
+      machine.drinkType = 1
+      machine.sugar = 3
     })
 
     it('should call verifyStep', () => {
@@ -252,6 +376,13 @@ describe('Unit | Coffee Machine', () => {
       // Then
       expect(machine.verifyStep).to.have.been.calledOnce
       expect(machine.verifyStep).to.have.been.calledWithExactly(4)
+    })
+
+    it('should return Object with drinkType & sugar', () => {
+      // When
+      const result = machine.build()
+      // Then
+      expect(result).to.deep.equal({drinkType: 'Café', sugar: 3})
     })
   })
 })
